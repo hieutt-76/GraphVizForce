@@ -92,8 +92,8 @@ public with sharing class ERDGenerator
             		ERDTemplateType templateType = (crossRelationship.isCascadeDelete?ERDTemplateType.MD_Relationship:ERDTemplateType.LOOKUP_RELATIONSHIP);
             		crossGroupRelationshipContent += templateEngine.render(templateType,
 									new Map<String, String>{
-										'from' => crossRelationship.parentObjectName,
-										'to' => crossRelationship.childObjectName
+										'from' => crossRelationship.parentObjectLabel,
+										'to' => crossRelationship.childObjectLabel
 									});    
             	}      
             }
@@ -120,7 +120,7 @@ public with sharing class ERDGenerator
 			System.debug(LoggingLevel.ERROR, '@@@@@@@@@@@@@@@entityField.fieldType:' + entityField.fieldType);
 			entityFieldsOutput += templateEngine.render(ERDTemplateType.FIELD,
 				new Map<String, String>{
-					'name' => entityField.fieldName,
+					'name' => entityField.fieldLabel,
 					'fieldType' => entityField.fieldType
 				});
 		}
@@ -150,7 +150,7 @@ public with sharing class ERDGenerator
 			
 			entityOutput += templateEngine.render(ERDTemplateType.ENTITY,
 				new Map<String, String>{
-					'name' => entity.objectName,
+					'name' => entity.objectLabel,
 					'fields' => entityFieldsOutput
 				});
 		}

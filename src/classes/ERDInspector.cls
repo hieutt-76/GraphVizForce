@@ -28,6 +28,7 @@ public with sharing class ERDInspector
 				// Add ERDEntity to Map
 				ERDEntity entity = new ERDEntity();
 				entity.objectName = objectName;
+				entity.objectLabel = objectResult.getLabel();
 				entity.isCustom = objectResult.isCustom();
 				entity.fieldList = erdFields;
 				erdEntityList.add(entity);
@@ -59,6 +60,8 @@ public with sharing class ERDInspector
 						entityRelationship.lookupFieldName = childRelationship.getField().getDescribe().getName();
 						entityRelationship.parentObjectName = objectName;
 						entityRelationship.childObjectName = childName;
+						entityRelationship.parentObjectLabel = objectResult.getLabel();
+						entityRelationship.childObjectLabel = childObjectResult.getLabel();
 						entityRelationship.isCascadeDelete = childRelationship.isCascadeDelete();
 						allObjectRelationshipList.add(entityRelationship);
 					}
@@ -141,6 +144,7 @@ public with sharing class ERDInspector
 		List<ERDEntityField> erdFields = new List<ERDEntityField>();
 		//Set<String> includedFieldNameSet = new Set<String>(includedFieldNames);
 		Map<String,String> fieldNameToFieldTypeMap = new Map<String,String>();
+		Map<String,String> fieldNameToFieldLabelMap = new Map<String,String>();
 		List<Schema.DescribeSobjectResult> objectResults = Schema.describeSObjects(new List<String>{objectName});
 		
 		if(!objectResults.isEmpty())
@@ -156,12 +160,18 @@ public with sharing class ERDInspector
 				String fieldName = fieldResult.getName();
 				Schema.DisplayType displayType= fieldResult.getType();
 				String fieldType = ERDDisplayType.getDisplayTypeLabel(displayType);
+				String fieldLabel = fieldResult.getLabel();
 				fieldNameToFieldTypeMap.put(fieldName,fieldType);
+                fieldNameToFieldLabelMap.put(fieldName,fieldLabel);
 			}
 			
 			for(String includedFieldName : includedFieldNames)
 			{
-				ERDEntityField erdField = new ERDEntityField(includedFieldName,fieldNameToFieldTypeMap.get(includedFieldName));
+				ERDEntityField erdField = new ERDEntityField(
+                    includedFieldName,
+                    fieldNameToFieldTypeMap.get(includedFieldName),
+                    fieldNameToFieldLabelMap.get(includedFieldName)
+                );
 				erdFields.add(erdField);
 			}
 		}
